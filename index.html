@@ -20,7 +20,7 @@
   }
 
   .front { font-weight: bold; }
-  .back { margin-left: 5px; font-weight: bold; }
+  .back { margin-left: 5px; font-weight: bold; color: red; } /* 赤文字に設定 */
   
   #note {
     margin-top: 30px;
@@ -48,7 +48,6 @@
   <button id="nextBtn">次の5問</button>
 </div>
 
-<!-- 注釈 -->
 <div id="note">
   <strong>注釈：</strong><br>
   ・問題の枠内を1回クリックすると答えが表示<br>
@@ -58,7 +57,6 @@
 </div>
 
 <script>
-// 20問の慣用句（漢字部分に読み仮名）
 const phrases = [
   ["猫に", "小判"],
   ["<ruby>二兎<rt>にと</rt></ruby>をおう者は", "一兎をも得ず"],
@@ -70,7 +68,7 @@ const phrases = [
   ["七転び", "八起き"],
   ["急がば", "回れ"],
   ["<ruby>論<rt>ろん</rt></ruby>より", "証拠"],
-  ["<ruby>類<rt>るい</rt></ruby>は友を呼ぶ", ""],
+  ["<ruby>類<rt>るい</rt></ruby>は", "友を呼ぶ"],
   ["<ruby>良薬<rt>りょうやく</rt></ruby>は", "口ににがし"],
   ["立て板に", "水"],
   ["<ruby>餅<rt>もち</rt></ruby>は", "餅屋"],
@@ -92,14 +90,10 @@ const weakModeCheckbox = document.getElementById("weakMode");
 const questionsPerPage = 5;
 let currentOrder = [];
 let currentIndex = 0;
+let mistakeCounts = {}; // 問題ごとの間違え回数
 
-// 1人用、問題ごとの間違え回数
-let mistakeCounts = {};
-
-// --- 出題順を準備 ---
 function prepareQuestionOrder(){
   if(weakModeCheckbox.checked){
-    // 間違え回数が多い順
     let sorted = phrases.map((_, idx) => ({idx, total: mistakeCounts[idx] || 0}));
     sorted.sort((a,b)=>b.total - a.total);
     currentOrder = sorted.map(o=>o.idx);
@@ -109,7 +103,6 @@ function prepareQuestionOrder(){
   }
 }
 
-// --- 前半表示/非表示切替 ---
 function updateFrontVisibility(){
   const hideFront = toggleFront.checked;
   document.querySelectorAll(".phrase").forEach(div=>{
@@ -119,7 +112,6 @@ function updateFrontVisibility(){
   });
 }
 
-// --- 問題を表示 ---
 function displayQuestions(){
   prepareQuestionOrder();
   questionsDiv.innerHTML="";
@@ -136,23 +128,19 @@ function displayQuestions(){
     const div = document.createElement("div");
     div.classList.add("phrase");
     div.dataset.idx = idx;
-    div.dataset.state = "hidden"; // hidden -> shown -> counted
+    div.dataset.state = "hidden";
 
-    // 左に間違え回数表示
     const count = mistakeCounts[idx] || 0;
     const countText = count>0 ? `[${count}] ` : "";
 
     div.innerHTML = `${countText}<span class="front">${front}</span> <span class="back">${back}</span>`;
     div.querySelector(".back").style.visibility = toggleFront.checked ? "visible" : "hidden";
 
-    // --- クリック動作 ---
     div.addEventListener("click", ()=>{
       if(div.dataset.state === "hidden"){
-        // 1回目クリック: 答えを表示
         div.querySelector(".back").style.visibility = "visible";
         div.dataset.state = "shown";
       } else if(div.dataset.state === "shown"){
-        // 2回目クリック: 不正解としてカウント
         mistakeCounts[idx] = (mistakeCounts[idx] || 0) + 1;
         div.dataset.state = "counted";
         div.innerHTML = `[${mistakeCounts[idx]}] <span class="front">${front}</span> <span class="back">${back}</span>`;
@@ -166,32 +154,26 @@ function displayQuestions(){
   showAnswerBtn.disabled = false;
 }
 
-// --- 答えを全表示 ---
 showAnswerBtn.addEventListener("click", ()=>{
   document.querySelectorAll(".phrase .back").forEach(span=>{
     span.style.visibility = "visible";
   });
 });
 
-// --- 次の5問 ---
 nextBtn.addEventListener("click", ()=>{
   currentIndex += questionsPerPage;
   if(currentIndex >= phrases.length) currentIndex = 0;
   displayQuestions();
 });
 
-// --- チェックボックス ---
 toggleFront.addEventListener("change", updateFrontVisibility);
 randomOrderCheckbox.addEventListener("change", ()=>{
-  currentIndex=0;
-  displayQuestions();
+  currentIndex=0; displayQuestions();
 });
 weakModeCheckbox.addEventListener("change", ()=>{
-  currentIndex=0;
-  displayQuestions();
+  currentIndex=0; displayQuestions();
 });
 
-// 初回表示
 displayQuestions();
 </script>
 
