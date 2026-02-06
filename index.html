@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>慣用句学習アプリ（初級20問）</title>
 <style>
-body { font-family: sans-serif; margin: 20px; font-size: 1.3em; }
-#controls { margin-bottom: 20px; text-align: center; }
-button { margin: 5px; font-size: 1.3em; padding: 10px 14px; }
+  body { font-family: sans-serif; margin: 20px; font-size: 1.3em; }
+  #controls { margin-bottom: 20px; text-align: center; }
+  button { margin: 5px; font-size: 1.3em; padding: 10px 14px; }
 
-.phrase { 
-  border: 2px solid #444; 
-  padding: 20px; 
-  margin: 10px auto; 
-  width: 50%; /* 横幅50% */
-  font-size: 1.3em; /* 文字サイズ1.3倍 */
-  cursor: pointer; 
-  display: block; /* 縦に並べる */
-  text-align: left; /* 左詰め */
-}
+  .phrase { 
+    border: 2px solid #444; 
+    padding: 20px; 
+    margin: 10px auto; 
+    width: 50%; /* 横幅50% */
+    font-size: 1.3em; /* 文字サイズ1.3倍 */
+    cursor: pointer; 
+    display: block; /* 縦に並べる */
+    text-align: left; /* 左詰め */
+  }
 
-.front { font-weight: bold; }
-.back { margin-left: 5px; font-weight: bold; text-transform: uppercase; }
+  .front { font-weight: bold; }
+  .back { margin-left: 5px; font-weight: bold; text-transform: uppercase; }
 </style>
 </head>
 <body>
@@ -31,12 +31,6 @@ button { margin: 5px; font-size: 1.3em; padding: 10px 14px; }
   <label><input type="checkbox" id="toggleFront"> 前半を隠す</label>
   <label><input type="checkbox" id="randomOrder"> ランダム出題</label>
   <label><input type="checkbox" id="weakMode"> 苦手問題優先</label>
-  <br>
-  <label>プレーヤー:</label>
-  <label><input type="checkbox" class="player" value="ミナト"> ミナト</label>
-  <label><input type="checkbox" class="player" value="ソウワ" checked> ソウワ</label>
-  <label><input type="checkbox" class="player" value="ヒロ"> ヒロ</label>
-  <label><input type="checkbox" class="player" value="トモ"> トモ</label>
 </div>
 
 <div id="questions"></div>
@@ -47,7 +41,7 @@ button { margin: 5px; font-size: 1.3em; padding: 10px 14px; }
 </div>
 
 <script>
-// 小学二年生以下向けの慣用句20問
+// 小学二年生以下向けの慣用句20問（指定の順序）
 const phrases = [
   ["猫に","小判"],
   ["二兎をおう者は","一兎をも得ず"],
@@ -68,7 +62,7 @@ const phrases = [
   ["備えあれば","うれいなし"],
   ["飛ぶ鳥","後をにごさず"],
   ["背に腹は","かえられぬ"],
-  ["馬の耳に","念仏"],  
+  ["馬の耳に","念仏"],
 ];
 
 const questionsDiv = document.getElementById("questions");
@@ -77,34 +71,30 @@ const nextBtn = document.getElementById("nextBtn");
 const toggleFront = document.getElementById("toggleFront");
 const randomOrderCheckbox = document.getElementById("randomOrder");
 const weakModeCheckbox = document.getElementById("weakMode");
-const playerCheckboxes = document.querySelectorAll(".player");
 
-const players = Array.from(playerCheckboxes).map(c=>c.value);
-let playerHistory = {};
-players.forEach(p => { playerHistory[p] = {}; });
+const questionsPerPage = 5;
 
 let currentOrder = [];
 let currentIndex = 0;
-const questionsPerPage = 5;
 
-function getSelectedPlayers(){
-  return Array.from(playerCheckboxes).filter(c=>c.checked).map(c=>c.value);
-}
+const player = "default"; // 1プレーヤー固定
+
+// 間違えた回数管理（プレーヤー1人なので単純にインデックスごとに管理）
+let mistakeCounts = {};
 
 function prepareQuestionOrder(){
   if(weakModeCheckbox.checked){
+    // 間違え多い順にソート
     let totalWrongList = phrases.map((_,idx)=>{
-      let total=0;
-      Object.keys(playerHistory).forEach(p=>{
-        total += playerHistory[p][idx]||0;
-      });
-      return {idx,total};
+      return {idx, total: mistakeCounts[idx] || 0};
     });
     totalWrongList.sort((a,b)=>b.total - a.total);
     currentOrder = totalWrongList.map(o=>o.idx);
   } else {
     currentOrder = phrases.map((_,i)=>i);
-    if(randomOrderCheckbox.checked) currentOrder.sort(()=>Math.random()-0.5);
+    if(randomOrderCheckbox.checked){
+      currentOrder.sort(()=>Math.random()-0.5);
+    }
   }
 }
 
@@ -120,26 +110,26 @@ function updateFrontVisibility(){
 function displayQuestions(){
   prepareQuestionOrder();
   questionsDiv.innerHTML="";
-  const selPlayers = getSelectedPlayers();
 
-  for(let i=0;i<questionsPerPage;i++){
+  for(let i=0; i<questionsPerPage; i++){
     let idx = currentOrder[currentIndex+i];
-    if(idx===undefined){
-      currentIndex=0;
+    if(idx === undefined){
+      currentIndex = 0;
       idx = currentOrder[currentIndex+i];
-      if(idx===undefined) break;
+      if(idx === undefined) break;
     }
-    const [front,back] = phrases[idx];
+    const [front, back] = phrases[idx];
     const div = document.createElement("div");
     div.classList.add("phrase");
     div.dataset.idx = idx;
     div.dataset.state = "hidden"; // hidden -> shown -> counted
 
-    let countText = selPlayers.map(p=>`${playerHistory[p][idx]||0}`).join(" ");
-    if(countText) countText = `[${countText}] `;
+    // 左に間違えた回数を表示（0は表示しない）
+    const count = mistakeCounts[idx] || 0;
+    const countText = count > 0 ? `[${count}] ` : "";
 
     div.innerHTML = `${countText}<span class="front">${front}</span> <span class="back">${back.toUpperCase()}</span>`;
-    
+
     div.querySelector(".back").style.visibility = toggleFront.checked ? "visible" : "hidden";
 
     div.addEventListener("click", ()=>{
@@ -147,19 +137,18 @@ function displayQuestions(){
         div.querySelector(".back").style.visibility = "visible";
         div.dataset.state = "shown";
       } else if(div.dataset.state === "shown"){
-        selPlayers.forEach(p=>{
-          playerHistory[p][idx] = (playerHistory[p][idx]||0) + 1;
-        });
+        // 間違いとしてカウントアップ
+        mistakeCounts[idx] = (mistakeCounts[idx] || 0) + 1;
         div.dataset.state = "counted";
-        let newCountText = selPlayers.map(p=>`${playerHistory[p][idx]||0}`).join(" ");
-        div.innerHTML = `[${newCountText}] <span class="front">${front}</span> <span class="back">${back.toUpperCase()}</span>`;
+
+        div.innerHTML = `[${mistakeCounts[idx]}] <span class="front">${front}</span> <span class="back">${back.toUpperCase()}</span>`;
       }
     });
 
     questionsDiv.appendChild(div);
   }
   updateFrontVisibility();
-  showAnswerBtn.disabled=false;
+  showAnswerBtn.disabled = false;
 }
 
 showAnswerBtn.addEventListener("click", ()=>{
@@ -170,16 +159,24 @@ showAnswerBtn.addEventListener("click", ()=>{
 
 nextBtn.addEventListener("click", ()=>{
   currentIndex += questionsPerPage;
+  if(currentIndex >= phrases.length){
+    currentIndex = 0;
+  }
   displayQuestions();
 });
 
 toggleFront.addEventListener("change", updateFrontVisibility);
-randomOrderCheckbox.addEventListener("change", ()=>{ currentIndex=0; displayQuestions(); });
-weakModeCheckbox.addEventListener("change", ()=>{ currentIndex=0; displayQuestions(); });
-playerCheckboxes.forEach(c=>c.addEventListener("change", ()=>{ displayQuestions(); }));
+randomOrderCheckbox.addEventListener("change", ()=>{
+  currentIndex = 0;
+  displayQuestions();
+});
+weakModeCheckbox.addEventListener("change", ()=>{
+  currentIndex = 0;
+  displayQuestions();
+});
 
 displayQuestions();
 </script>
+
 </body>
 </html>
-
