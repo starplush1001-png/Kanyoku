@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>慣用句学習アプリ</title>
+<title>慣用句学習アプリ（初級20問）</title>
 <style>
 body { font-family: sans-serif; margin: 20px; }
 #controls { margin-bottom: 20px; text-align: center; }
@@ -25,7 +25,7 @@ button { margin: 5px; font-size: 18px; padding: 8px 12px; }
 </head>
 <body>
 
-<h1 style="text-align:center;">慣用句学習アプリ</h1>
+<h1 style="text-align:center;">慣用句学習アプリ（初級）</h1>
 
 <div id="controls">
   <label><input type="checkbox" id="toggleFront"> 前半を隠す</label>
@@ -47,34 +47,28 @@ button { margin: 5px; font-size: 18px; padding: 8px 12px; }
 </div>
 
 <script>
-// 100個の慣用句（略）
-// 前回のコードの phrases 配列をここに入れる
-
+// 小学二年生以下向けの慣用句20問
 const phrases = [
-  ["論より","証拠"], ["類は","友を呼ぶ"], ["良薬は","口ににがし"], ["立て板に","水"], ["揚げ足を","とる"],
-  ["柳の下の","どじょう"], ["餅は","餅屋"], ["坊主にくけりゃ","袈裟までにくい"], ["壁に","耳あり"], ["聞くは一時の恥","聞かぬは一生の恥"],
-  ["聞いて","極楽 見て","地獄"], ["武士はくわねど","高楊枝"], ["負けるが","勝ち"], ["腐っても","鯛"], ["百聞は","一見にしかず"],
-  ["備えあれば","うれいなし"], ["飛んで火にいる","夏の虫"], ["飛ぶ鳥","後をにごさず"], ["背に腹は","かえらぬ"], ["馬の耳に","念仏"],
-  ["能ある鷹は","つめを隠す"], ["猫に","小判"], ["二兎をおう者は","一兎をも得ず"], ["鳶に","油揚げをさらわれる"], ["毒を食わば","皿まで"],
-  ["毒をもって","毒を制す"], ["頭かくして","尻かくさず"], ["逃がした魚は","大きい"], ["灯台もと","暗し"], ["盗人を見て","なわをなう"],
-  ["渡る世間に","鬼はなし"], ["転ばぬ先の","杖"], ["天に","つばする"], ["笛ふけど","おどらず"], ["敵も","さるもの"],
-  ["鶴の","一声"], ["爪に","火をともす"], ["長い物には","巻かれろ"], ["竹馬の","友"], ["地獄で","仏"],
-  ["知らぬが","仏"], ["短気は","損気"], ["大事の前の","小事"], ["大山鳴動して","ねずみ一匹"], ["待てば海路の","ひよりあり"],
-  ["帯に短したすきに","長し"], ["対岸の","火事"], ["足もとから","鳥が立つ"], ["憎まれっ子","世にはばかる"], ["善は","急げ"],
-  ["赤子の手を","ひねる"], ["石橋を","たたいて渡る"], ["石の上にも","三年"], ["生き馬の目を","抜く"], ["雀百まで","おどりを忘れず"],
-  ["人のふり見て","我がふり直せ"], ["身から","出たさび"], ["親の心","子知らず"], ["親のすねを","かじる"], ["心を","鬼にする"],
-  ["寝耳に","水"], ["尻切れ","トンボ"], ["触らぬ神に","たたりなし"], ["乗りかかった","船"], ["焼け石に","水"],
-  ["勝ってかぶとの緒を","しめよ"], ["所変われば","品変わる"], ["出る杭は","打たれる"], ["十人十色"], ["住めば","都"],
-  ["朱に交われば","赤くなる"], ["手塩に","かける"], ["手の裏を","かえす"], ["蛇の道は","へび"], ["七転び","八起き"],
-  ["時は","金なり"], ["歯に衣","着せぬ"], ["飼い犬に","手をかまれる"], ["三度目の","正直"], ["三人よれば","文殊のちえ"],
-  ["三つ子の魂","百まで"], ["高みの","見物"], ["弘法にも","筆のあやまり"], ["好きこそ物の","上手なれ"], ["口は災いの","もと"],
-  ["光陰矢の","ごとし"], ["鯉の","たき登り"], ["虎の","子"], ["枯れ木も山の","にぎわい"], ["故郷に","錦をかざる"],
-  ["犬も歩けば","棒にあたる"], ["月と","すっぽん"], ["君子あやうきに","近寄らず"], ["苦しいときの","神だのみ"], ["苦は楽の","種"],
-  ["郷に入っては","郷に従え"], ["魚心あれば","水心"], ["窮鼠","猫をかむ"], ["窮すれば","通ず"], ["泣き面には","ち"],
-  ["急がば","回れ"], ["急いては","事をし損じる"], ["鬼の目にも","なみだ"], ["鬼の居ぬ間に","洗濯"], ["鬼に","金棒"],
-  ["顔に","どろをぬる"], ["蛙の面に","水"], ["花より","団子"], ["火中の栗を","ひろう"], ["河童の","川流れ"],
-  ["果報は","ねて待て"], ["化けの皮を","あらわす"], ["下手の考え","休むににたり"], ["恩をあだで","かえす"], ["縁の下の","力持ち"],
-  ["猿も木から","落ちる"], ["雨降って","地固まる"]
+  ["馬の耳に","念仏"],
+  ["猫に","小判"],
+  ["二兎をおう者は","一兎をも得ず"],
+  ["論より","証拠"],
+  ["石橋を","たたいて渡る"],
+  ["三度目の","正直"],
+  ["七転び","八起き"],
+  ["類は","友を呼ぶ"],
+  ["良薬は","口ににがし"],
+  ["立て板に","水"],
+  ["餅は","餅屋"],
+  ["壁に","耳あり"],
+  ["百聞は","一見にしかず"],
+  ["備えあれば","うれいなし"],
+  ["飛ぶ鳥","後をにごさず"],
+  ["背に腹は","かえられぬ"],
+  ["逃がした魚は","大きい"],
+  ["灯台もと","暗し"],
+  ["善は","急げ"],
+  ["急がば","回れ"]
 ];
 
 const questionsDiv = document.getElementById("questions");
@@ -119,23 +113,15 @@ function updateFrontVisibility(){
   document.querySelectorAll(".phrase").forEach(div=>{
     const frontSpan = div.querySelector(".front");
     frontSpan.style.visibility = hideFront ? "hidden" : "visible";
-    div.querySelector(".back").style.visibility = hideFront ? "visible" : "hidden";
+    if(div.dataset.state==="hidden") div.querySelector(".back").style.visibility = hideFront ? "visible" : "hidden";
   });
-}
-
-function markWrong(div){
-  const idx = div.dataset.idx;
-  const selPlayers = getSelectedPlayers();
-  selPlayers.forEach(p=>{
-    playerHistory[p][idx] = (playerHistory[p][idx]||0) + 1;
-  });
-  displayQuestions();
 }
 
 function displayQuestions(){
   prepareQuestionOrder();
   questionsDiv.innerHTML="";
   const selPlayers = getSelectedPlayers();
+
   for(let i=0;i<questionsPerPage;i++){
     let idx = currentOrder[currentIndex+i];
     if(idx===undefined){
@@ -147,12 +133,29 @@ function displayQuestions(){
     const div = document.createElement("div");
     div.classList.add("phrase");
     div.dataset.idx = idx;
+    div.dataset.state = "hidden"; // hidden -> shown -> counted
 
     let countText = selPlayers.map(p=>`${playerHistory[p][idx]||0}`).join(" ");
     if(countText) countText = `[${countText}] `;
 
     div.innerHTML = `${countText}<span class="front">${front}</span> <span class="back">${back||""}</span>`;
-    div.addEventListener("click", ()=> { markWrong(div); });
+    
+    div.querySelector(".back").style.visibility = toggleFront.checked ? "visible" : "hidden";
+
+    div.addEventListener("click", ()=>{
+      if(div.dataset.state === "hidden"){
+        div.querySelector(".back").style.visibility = "visible";
+        div.dataset.state = "shown";
+      } else if(div.dataset.state === "shown"){
+        selPlayers.forEach(p=>{
+          playerHistory[p][idx] = (playerHistory[p][idx]||0) + 1;
+        });
+        div.dataset.state = "counted";
+        let newCountText = selPlayers.map(p=>`${playerHistory[p][idx]||0}`).join(" ");
+        div.innerHTML = `[${newCountText}] <span class="front">${front}</span> <span class="back">${back||""}</span>`;
+      }
+    });
+
     questionsDiv.appendChild(div);
   }
   updateFrontVisibility();
@@ -179,4 +182,3 @@ displayQuestions();
 </script>
 </body>
 </html>
-
