@@ -6,19 +6,19 @@
 <style>
 body { font-family: sans-serif; margin: 20px; }
 #controls { margin-bottom: 20px; text-align: center; }
-button { margin: 5px; font-size: 16px; padding: 5px 10px; }
+button { margin: 5px; font-size: 18px; padding: 8px 12px; }
 
 .phrase { 
   border: 2px solid #444; 
-  padding: 15px; 
-  margin: 10px; 
-  width: 30%; /* 横幅30% */
-  font-size: 20px; 
+  padding: 20px; 
+  margin: 10px auto; 
+  width: 50%; /* 横幅50% */
+  font-size: 26px; /* 文字大きめ */
   cursor: pointer; 
-  display: inline-block; /* 左寄せにして横に並べる */
-  vertical-align: top;
-  text-align: left; /* 中のテキストも左詰め */
+  display: block; /* 縦に並べる */
+  text-align: left; /* 左詰め */
 }
+
 .front { font-weight: bold; }
 .back { margin-left: 5px; }
 </style>
@@ -47,7 +47,9 @@ button { margin: 5px; font-size: 16px; padding: 5px 10px; }
 </div>
 
 <script>
-// 100個の慣用句
+// 100個の慣用句（略）
+// 前回のコードの phrases 配列をここに入れる
+
 const phrases = [
   ["論より","証拠"], ["類は","友を呼ぶ"], ["良薬は","口ににがし"], ["立て板に","水"], ["揚げ足を","とる"],
   ["柳の下の","どじょう"], ["餅は","餅屋"], ["坊主にくけりゃ","袈裟までにくい"], ["壁に","耳あり"], ["聞くは一時の恥","聞かぬは一生の恥"],
