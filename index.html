@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8" />
-<title>慣用句学習アプリ（初級20問）</title>
+<title>慣用句学習アプリ</title>
 <style>
   body { font-family: sans-serif; margin: 20px; font-size: 1.3em; }
   #controls { margin-bottom: 20px; text-align: center; }
@@ -12,11 +12,11 @@
     border: 2px solid #444; 
     padding: 20px; 
     margin: 10px auto; 
-    width: 50%; /* 横幅50% */
-    font-size: 1.3em; /* 文字サイズ1.3倍 */
+    width: 50%; 
+    font-size: 1.3em; 
     cursor: pointer; 
-    display: block; /* 縦に並べる */
-    text-align: left; /* 左詰め */
+    display: block; 
+    text-align: left;
   }
 
   .front { font-weight: bold; }
@@ -25,7 +25,7 @@
 </head>
 <body>
 
-<h1 style="text-align:center;">慣用句学習アプリ（初級）</h1>
+<h1 style="text-align:center;">慣用句学習アプリ</h1>
 
 <div id="controls">
   <label><input type="checkbox" id="toggleFront"> 前半を隠す</label>
@@ -41,28 +41,28 @@
 </div>
 
 <script>
-// 小学二年生以下向けの慣用句20問（指定の順序）
+// 小学二年生以下向けの慣用句20問
 const phrases = [
-  ["猫に","小判"],
-  ["二兎をおう者は","一兎をも得ず"],
-  ["逃がした魚は","大きい"],
-  ["灯台もと","暗し"],
-  ["善は","急げ"],
-  ["石橋を","たたいて渡る"],
-  ["三度目の","正直"],
-  ["七転び","八起き"],
-  ["急がば","回れ"],
-  ["論より","証拠"],
-  ["類は","友を呼ぶ"],
-  ["良薬は","口ににがし"],
-  ["立て板に","水"],
-  ["餅は","餅屋"],
-  ["壁に","耳あり"],
-  ["百聞は","一見にしかず"],
-  ["備えあれば","うれいなし"],
-  ["飛ぶ鳥","後をにごさず"],
-  ["背に腹は","かえられぬ"],
-  ["馬の耳に","念仏"],
+  ["猫に", "小判"],
+  ["二兎をおう者は", "一兎をも得ず"],
+  ["逃がした魚は", "大きい"],
+  ["灯台もと", "暗し"],
+  ["善は", "急げ"],
+  ["石橋を", "たたいて渡る"],
+  ["三度目の", "正直"],
+  ["七転び", "八起き"],
+  ["急がば", "回れ"],
+  ["論より", "証拠"],
+  ["類は友を呼ぶ", ""],
+  ["良薬は", "口ににがし"],
+  ["立て板に", "水"],
+  ["餅は", "餅屋"],
+  ["壁に", "耳あり"],
+  ["百聞は", "一見にしかず"],
+  ["備えあれば", "憂いなし"],
+  ["飛ぶ鳥", "後をにごさず"],
+  ["背に腹は", "替えられぬ"],
+  ["馬の耳に", "念仏"],
 ];
 
 const questionsDiv = document.getElementById("questions");
@@ -73,28 +73,18 @@ const randomOrderCheckbox = document.getElementById("randomOrder");
 const weakModeCheckbox = document.getElementById("weakMode");
 
 const questionsPerPage = 5;
-
 let currentOrder = [];
 let currentIndex = 0;
-
-const player = "default"; // 1プレーヤー固定
-
-// 間違えた回数管理（プレーヤー1人なので単純にインデックスごとに管理）
 let mistakeCounts = {};
 
 function prepareQuestionOrder(){
   if(weakModeCheckbox.checked){
-    // 間違え多い順にソート
-    let totalWrongList = phrases.map((_,idx)=>{
-      return {idx, total: mistakeCounts[idx] || 0};
-    });
+    let totalWrongList = phrases.map((_,idx)=>({idx, total: mistakeCounts[idx] || 0}));
     totalWrongList.sort((a,b)=>b.total - a.total);
     currentOrder = totalWrongList.map(o=>o.idx);
   } else {
     currentOrder = phrases.map((_,i)=>i);
-    if(randomOrderCheckbox.checked){
-      currentOrder.sort(()=>Math.random()-0.5);
-    }
+    if(randomOrderCheckbox.checked) currentOrder.sort(()=>Math.random()-0.5);
   }
 }
 
@@ -122,9 +112,8 @@ function displayQuestions(){
     const div = document.createElement("div");
     div.classList.add("phrase");
     div.dataset.idx = idx;
-    div.dataset.state = "hidden"; // hidden -> shown -> counted
+    div.dataset.state = "hidden";
 
-    // 左に間違えた回数を表示（0は表示しない）
     const count = mistakeCounts[idx] || 0;
     const countText = count > 0 ? `[${count}] ` : "";
 
@@ -137,10 +126,8 @@ function displayQuestions(){
         div.querySelector(".back").style.visibility = "visible";
         div.dataset.state = "shown";
       } else if(div.dataset.state === "shown"){
-        // 間違いとしてカウントアップ
         mistakeCounts[idx] = (mistakeCounts[idx] || 0) + 1;
         div.dataset.state = "counted";
-
         div.innerHTML = `[${mistakeCounts[idx]}] <span class="front">${front}</span> <span class="back">${back.toUpperCase()}</span>`;
       }
     });
@@ -152,28 +139,18 @@ function displayQuestions(){
 }
 
 showAnswerBtn.addEventListener("click", ()=>{
-  document.querySelectorAll(".phrase .back").forEach(span=>{
-    span.style.visibility = "visible";
-  });
+  document.querySelectorAll(".phrase .back").forEach(span=>span.style.visibility="visible");
 });
 
 nextBtn.addEventListener("click", ()=>{
   currentIndex += questionsPerPage;
-  if(currentIndex >= phrases.length){
-    currentIndex = 0;
-  }
+  if(currentIndex >= phrases.length) currentIndex = 0;
   displayQuestions();
 });
 
 toggleFront.addEventListener("change", updateFrontVisibility);
-randomOrderCheckbox.addEventListener("change", ()=>{
-  currentIndex = 0;
-  displayQuestions();
-});
-weakModeCheckbox.addEventListener("change", ()=>{
-  currentIndex = 0;
-  displayQuestions();
-});
+randomOrderCheckbox.addEventListener("change", ()=>{ currentIndex=0; displayQuestions(); });
+weakModeCheckbox.addEventListener("change", ()=>{ currentIndex=0; displayQuestions(); });
 
 displayQuestions();
 </script>
